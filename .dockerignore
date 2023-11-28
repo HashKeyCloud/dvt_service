@@ -1,0 +1,13 @@
+logs
+.idea
+.vscode
+init
+makefile
+.gitignore
+.git
+cmd
+out
+node_modules
+test
+validator_keys
+tools

@@ -1,0 +1,35 @@
+version: "3.8"
+services:
+  dvt-product:
+    container_name: "dvt-product"
+    image: "dvt-product"
+    ports:
+      - "3000:3000"
+
+  dvt-consumer:
+    container_name: "dvt-consumer"
+    image: "dvt-consumer"
+    ports:
+      - "3001:3000"
+
+  mysql:
+    container_name: 'mysql'
+    image: 'mysql'
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123456"
+    volumes:
+      - /data/docker/mysql:/var/lib/mysql
+      - /data/docker/mydir:/mydir
+    ports:
+      - "3306:3306"
+    restart: always
+
+  redis:
+    container_name: 'redis'
+    image: 'redis'
+    volumes:
+      - /data/redis/data:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass=123456
+    restart: always

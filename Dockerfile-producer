@@ -1,0 +1,19 @@
+FROM golang:1.20-bullseye as builder
+
+WORKDIR /src
+COPY . .
+RUN go mod tidy -v \
+    && go build -o build/dvt_service main.go
+
+FROM debian:bullseye as prod
+
+WORKDIR /root
+
+COPY --from=builder /src/build/dvt_service .
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+ENV GIN_MODE release
+
+EXPOSE 3000
+
+CMD ["/root/dvt_service"]

@@ -1,0 +1,16 @@
+node_modules
+
+.idea
+.vscode
+
+dist
+
+yarn-error.log
+
+Shares_*
+*_hk
+validator_keys
+logs
+out
+/tools/dvt_auxiliary/
+test

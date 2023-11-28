@@ -1,0 +1,372 @@
+definitions:
+  models.KeystoreV4:
+    properties:
+      crypto:
+        additionalProperties: true
+        type: object
+      name:
+        type: string
+      path:
+        type: string
+      pubkey:
+        type: string
+      uuid:
+        type: string
+      version:
+        type: integer
+    type: object
+  models.UploadKeystore:
+    properties:
+      keys:
+        items:
+          $ref: '#/definitions/models.KeystoreV4'
+        type: array
+      password:
+        type: string
+    type: object
+  service.clusterAmountRequest:
+    properties:
+      amount:
+        type: string
+    type: object
+  service.clusterNoncePutRequest:
+    properties:
+      nonce:
+        type: integer
+    type: object
+  service.resultResponse:
+    properties:
+      code:
+        description: response code
+        type: integer
+      data:
+        description: other data info
+      msg:
+        description: error or success msg
+        type: string
+    type: object
+  service.setFeeRecipientAddressBody:
+    properties:
+      fee_recipient:
+        description: New Fee Recipient Address
+        type: string
+    type: object
+  service.validatorBody:
+    properties:
+      public_keys:
+        description: public key array
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: DVT Service API
+  version: 1.0.0
+paths:
+  /ssv/{Validator}/state/:
+    get:
+      consumes:
+      - application/json
+      description: check Validator state
+      parameters:
+      - description: Validator publicKey
+        in: path
+        name: Validator
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: validator error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: other fail
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: validatorState
+      tags:
+      - Validator
+  /ssv/cluster/deposit:
+    post:
+      consumes:
+      - application/json
+      description: Deposit cluster ssv
+      parameters:
+      - description: amount
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.clusterAmountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task uuid
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: cluster Deposit ssv
+      tags:
+      - cluster
+  /ssv/cluster/nonce:
+    get:
+      consumes:
+      - application/json
+      description: get cluster owner register nonce
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: cluster register nonce
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: cluster owner register nonce
+      tags:
+      - nonce
+    put:
+      consumes:
+      - application/json
+      description: set cluster owner register nonce
+      parameters:
+      - description: nonce
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.clusterNoncePutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: massage
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: cluster owner register nonce
+      tags:
+      - nonce
+  /ssv/cluster/reactive:
+    post:
+      consumes:
+      - application/json
+      description: reactive cluster
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task uuid(string)
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: clusterReactive
+      tags:
+      - cluster
+  /ssv/cluster/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: Withdraw cluster ssv
+      parameters:
+      - description: amount
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.clusterAmountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task uuid
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: cluster Withdraw ssv
+      tags:
+      - cluster
+  /ssv/feeRecipient/{TaskId}/state:
+    get:
+      consumes:
+      - application/json
+      description: check FeeRecipient ClusterValidatorTask State
+      parameters:
+      - description: fee recipient task id
+        in: path
+        name: TaskId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: feeRecipientState
+      tags:
+      - FeeRecipient
+  /ssv/registerValidator:
+    post:
+      consumes:
+      - application/json
+      description: Provide the publicKey array to register Validator in ssv network
+      parameters:
+      - description: publicKey array
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.validatorBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: tasks create
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: registerValidator
+      tags:
+      - Validator
+  /ssv/removeValidator:
+    post:
+      consumes:
+      - application/json
+      description: remove Validator to ssv network
+      parameters:
+      - description: publicKey array
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.validatorBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: tasks create
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: removeValidator
+      tags:
+      - Validator
+  /ssv/setFeeRecipientAddress:
+    post:
+      consumes:
+      - application/json
+      description: set FeeRecipient Address on ssv network
+      parameters:
+      - description: New Fee Recipient Address
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/service.setFeeRecipientAddressBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: FeeRecipientTask Id:(number)
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: setFeeRecipientAddress
+      tags:
+      - FeeRecipient
+  /ssv/upload:
+    post:
+      consumes:
+      - application/json
+      description: upload keystore by dvt tools
+      parameters:
+      - description: keystore info
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UploadKeystore'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "400":
+          description: params error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/service.resultResponse'
+      summary: upload
+      tags:
+      - upload
+swagger: "2.0"
